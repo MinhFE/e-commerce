@@ -17,9 +17,11 @@ import { Input } from "@/components/ui/input";
 import { LoginBody, LoginBodyType } from "@/schemaValidations/auth.schema";
 import envConfig from "@/config";
 import { useToast } from "@/components/ui/use-toast";
+import { useAppContext } from "@/app/AppProvider";
 
 function LoginForm() {
   const { toast } = useToast();
+  const { setSessionToken } = useAppContext();
   const form = useForm<LoginBodyType>({
     resolver: zodResolver(LoginBody),
     defaultValues: {
@@ -53,6 +55,24 @@ function LoginForm() {
       toast({
         description: result.payload.message,
       });
+      const resultFromNextServer = await fetch("/api/auth", {
+        method: "POST",
+        body: JSON.stringify(result),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then(async (res) => {
+        const payload = await res.json();
+        const data = {
+          status: res.status,
+          payload,
+        };
+        if (!res.ok) {
+          throw data;
+        }
+        return data;
+      });
+      setSessionToken(resultFromNextServer.payload.data.token);
     } catch (error: any) {
       const errors = error.payload.errors as {
         field: string;
