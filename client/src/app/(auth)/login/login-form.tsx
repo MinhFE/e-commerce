@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -10,14 +10,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { LoginBody, LoginBodyType } from "@/schemaValidations/auth.schema";
-import { useToast } from "@/components/ui/use-toast";
-import authApiRequest from "@/api/auth";
-import { useRouter } from "next/navigation";
-import { handleErrorApi } from "@/lib/utils";
-import { useState } from "react";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { LoginBody, LoginBodyType } from '@/schemaValidations/auth.schema';
+import { useToast } from '@/components/ui/use-toast';
+import authApiRequest from '@/api/auth';
+import { useRouter } from 'next/navigation';
+import { handleErrorApi } from '@/lib/utils';
+import { useState } from 'react';
 
 function LoginForm() {
   const [loading, setLoading] = useState(false);
@@ -26,8 +26,8 @@ function LoginForm() {
   const form = useForm<LoginBodyType>({
     resolver: zodResolver(LoginBody),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
 
@@ -36,11 +36,15 @@ function LoginForm() {
     setLoading(true);
     try {
       const result = await authApiRequest.login(values);
+
+      await authApiRequest.auth({
+        sessionToken: result.payload.data.token,
+        expiresAt: result.payload.data.expiresAt,
+      });
       toast({
         description: result.payload.message,
       });
-      await authApiRequest.auth({ sessionToken: result.payload.data.token });
-      router.push("/me");
+      router.push('/me');
     } catch (error: any) {
       handleErrorApi({
         error,
