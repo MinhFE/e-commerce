@@ -4,7 +4,7 @@ import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import Header from '@/components/header';
 import { Toaster } from '@/components/ui/toaster';
-import AppProvider from '@/app/AppProvider';
+import AppProvider from '@/app/app-provider';
 import { cookies } from 'next/headers';
 import SlideSession from '@/components/slide-session';
 
