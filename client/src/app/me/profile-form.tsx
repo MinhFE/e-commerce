@@ -1,3 +1,5 @@
+'use client'
+
 import accountApiRequest from '@/api/account';
 import { Button } from '@/components/ui/button';
 import {
